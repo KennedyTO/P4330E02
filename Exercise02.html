@@ -364,18 +364,125 @@ predict income (REALINC) from sex (SEX), occupational prestige
 Using the dataset ‘us_gss_1991.csv’ (subset of the 1991 United States
 General Social Survey, available on eClass), address the following. Use
 α = .01 for null hypothesis testing.</p>
-<p>1.Run a general linear model (GLM) predicting income from sex,
-occupational prestige, religion and number of hours worked per week.</p>
-<p>2.Interpret each of the unstandardized regression coefficients, both
-in terms of magnitude and precision</p>
-<p>3.Evaluate the statistical significance of the model and each
-predictor</p>
-<p>4.Calculate the predicted income for a protestant male who works 30
-hours/week at a job with an occupation prestige of 55.</p>
-<p>5.Interpret the magnitude of effect size measures related to
-predicting income (use 1m. beta)</p>
-<p>6 Interpret the assumptions of the model. Are there any concerns? (I
-know… this should have been done first!)</p>
+<div id="run-a-general-linear-model-glm-predicting-income-from-sex-occupational-prestige-religion-and-number-of-hours-worked-per-week." class="section level4">
+<h4>1.Run a general linear model (GLM) predicting income from sex,
+occupational prestige, religion and number of hours worked per
+week.</h4>
+<pre class="r"><code># Road the data
+d &lt;- read.csv(&quot;~/Desktop/P4330/P4330 R code/Exercise01/Exercise02/Exercise02/us_gss_1991.csv&quot;)
+
+# Review the data structures
+str(d)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    825 obs. of  5 variables:
+##  $ REALINC : int  6267 90265 90265 9401 90265 19846 90265 17757 22980 31336 ...
+##  $ SEX     : chr  &quot;Female&quot; &quot;Female&quot; &quot;Male&quot; &quot;Female&quot; ...
+##  $ PRESTG80: int  22 75 59 42 38 36 65 49 50 32 ...
+##  $ RELIG   : chr  &quot;Catholic&quot; &quot;Jewish&quot; &quot;Other&quot; &quot;None&quot; ...
+##  $ HRS1    : int  40 20 50 20 30 40 40 40 50 40 ...</code></pre>
+<pre class="r"><code># Convert Character to factor
+d$RELIG &lt;- factor(d$RELIG)
+
+# Check the levels
+levels(d$RELIG)</code></pre>
+<pre><code>## [1] &quot;Catholic&quot;   &quot;Jewish&quot;     &quot;None&quot;       &quot;Other&quot;      &quot;Protestant&quot;</code></pre>
+<pre class="r"><code># Run a linear model as m and show summary
+m &lt;-  lm(REALINC ~ SEX + PRESTG80 + RELIG + HRS1, data = d)
+summary(m)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = REALINC ~ SEX + PRESTG80 + RELIG + HRS1, data = d)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -45793 -13764  -4409   9402  68222 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      3159.13    3240.78   0.975 0.329945    
+## SEXMale          5426.48    1463.78   3.707 0.000224 ***
+## PRESTG80          528.48      53.27   9.921  &lt; 2e-16 ***
+## RELIGJewish     16848.70    4885.85   3.448 0.000593 ***
+## RELIGNone       -3147.08    2792.19  -1.127 0.260031    
+## RELIGOther       3686.54    4968.91   0.742 0.458348    
+## RELIGProtestant -2263.78    1664.23  -1.360 0.174123    
+## HRS1               92.69      50.19   1.847 0.065111 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 20190 on 817 degrees of freedom
+## Multiple R-squared:  0.1616, Adjusted R-squared:  0.1545 
+## F-statistic:  22.5 on 7 and 817 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code># Obtain Confident Intervals
+confint(m)</code></pre>
+<pre><code>##                        2.5 %    97.5 %
+## (Intercept)     -3202.109293  9520.376
+## SEXMale          2553.269438  8299.695
+## PRESTG80          423.923492   633.040
+## RELIGJewish      7258.414873 26438.994
+## RELIGNone       -8627.782566  2333.630
+## RELIGOther      -6066.787597 13439.868
+## RELIGProtestant -5530.451468  1002.884
+## HRS1               -5.815884   191.201</code></pre>
+</div>
+<div id="interpret-each-of-the-unstandardized-regression-coefficients-both-in-terms-of-magnitude-precision-and-statistical-significance." class="section level4">
+<h4>2.Interpret each of the unstandardized regression coefficients, both
+in terms of magnitude, precision and statistical significance.</h4>
+<p>The intercept is SEXFemale with catholic background.</p>
+<p><strong>SexMale:</strong><br />
+Based on the genealized regression analysis, the coefficient for SEXMale
+is $5426.48, indicating that, when holding all other variables constant,
+being male is associated with a predicted increase by this amount, on
+average, in real income compared to female. Furthermore, the statistical
+significance of this result is underscored by a t-value of 3.707 and a
+highly significant p-value 0.000224.</p>
+<p><strong>PRESTG80:</strong><br />
+A unit increase in PRESTG80 is associated with an expected increase of
+$528.48175 in annual income, while holding all other predictors
+constant. The corresponding Standard Error for the Estimate value was
+1463.78. Therefore, the t-value is 3.448 unit and p-value of less than
+2e-16. This small p-value indicates</p>
+<p><strong>RELIGJewish</strong><br />
+A one-unit increase in the variable RELIGJewish is associated with an
+estimated increase of $16,848.70 in real income on average, while
+holding all other variables constant. This predictor is statistically
+significant, as evidenced by a low p-value of 0.000593. Consequently,
+the null hypothesis positing no expected difference in income based on
+Jewish religious affiliation is rejected.</p>
+<p><strong>RELIGNone</strong><br />
+Non-religious people are expected to makes $3147.08 less than Catholic
+people per year, while holding other variables constant. However, this
+factor is considered to be not statistically significant with the
+p-value of 0.26, and it failed to reject the null hypothesis.</p>
+<p><strong>RELIGOther</strong></p>
+<p>The coefficient estimate suggests that, on average, individuals
+identifying with religions categorized as “Other” are expected to earn
+3,686.54 dollars more than those affiliating with Catholicism, when
+other variables are held constant. However, the standard error (SE) for
+this estimate is 4,968.91 dollars. The calculated t-value is 0.742,
+which corresponds to a non-significant p-value of 0.458348. Therefore,
+the difference in earnings between these two religious groups is not
+statistically significant.</p>
+</div>
+<div id="evaluate-the-statistical-significance-of-the-model" class="section level4">
+<h4>3.Evaluate the statistical significance of the model</h4>
+<pre class="r"><code>summary(m)$coefficients[, &quot;Pr(&gt;|t|)&quot;]</code></pre>
+<pre><code>##     (Intercept)         SEXMale        PRESTG80     RELIGJewish       RELIGNone 
+##    3.299453e-01    2.237318e-04    5.552679e-22    5.926159e-04    2.600308e-01 
+##      RELIGOther RELIGProtestant            HRS1 
+##    4.583480e-01    1.741228e-01    6.511074e-02</code></pre>
+</div>
+<div id="calculate-the-predicted-income-for-a-protestant-male-who-works-30-hoursweek-at-a-job-with-an-occupation-prestige-of-55." class="section level4">
+<h4>4.Calculate the predicted income for a protestant male who works 30
+hours/week at a job with an occupation prestige of 55.</h4>
+</div>
+<div id="interpret-the-magnitude-of-effect-size-measures-related-to-predicting-income-use-1m.-beta" class="section level4">
+<h4>5.Interpret the magnitude of effect size measures related to
+predicting income (use 1m. beta)</h4>
+</div>
+<div id="interpret-the-assumptions-of-the-model.-are-there-any-concerns-i-know-this-should-have-been-done-first" class="section level4">
+<h4>6.Interpret the assumptions of the model. Are there any concerns? (I
+know… this should have been done first!)</h4>
+</div>
 
 
 
