@@ -1,0 +1,33 @@
+---
+title: "Exercise02"
+author: "Ken Suzuki"
+date: "2023-10-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+A researcher is interested in studying potential predictors of income differences among individuals. More specifically, she would like to predict income (REALINC) from sex (SEX), occupational prestige (PRESTG80), religion (RELIG) and number of hours worked per week (HRS1). Using the dataset ‘us_gss_1991.csv’ (subset of the 1991 United States General Social Survey, available on eClass), address the following. Use α = .01 for null hypothesis testing.
+
+1.Run a general linear model (GLM) predicting income from sex, occupational prestige, religion and number of hours worked per week.
+
+```{r}
+d <- read.csv("~/Desktop/P4330/P4330 R code/Exercise01/Exercise02/Exercise02/us_gss_1991.csv")
+names(d)
+
+mod01
+
+```
+
+
+2.Interpret each of the unstandardized regression coefficients, both in terms of magnitude and precision 
+
+3.Evaluate the statistical significance of the model and each predictor 
+
+4.Calculate the predicted income for a protestant male who works 30 hours/week at a job with an occupation prestige of 55.
+
+5.Interpret the magnitude of effect size measures related to predicting income (use 1m. beta) 
+
+6.Interpret the assumptions of the model. Are there any concerns? (I know... this should have been done first!)
