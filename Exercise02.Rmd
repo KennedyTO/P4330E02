@@ -7,9 +7,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
 ```
 
-A researcher is interested in studying potential predictors of income differences among individuals. More specifically, she would like to predict income (REALINC) from sex (SEX), occupational prestige (PRESTG80), religion (RELIG) and number of hours worked per week (HRS1). Using the dataset ‘us_gss_1991.csv’ (subset of the 1991 United States General Social Survey, available on eClass), address the following. Use α = .01 for null hypothesis testing.
+A researcher is interested in studying potential predictors of income differences among individuals. More specifically, she would like to predict income (REALINC) from sex (SEX), occupational prestige (PRESTG80), religion (RELIG) and number of hours worked per week (HRS1). Using the dataset 'us_gss_1991.csv' (subset of the 1991 United States General Social Survey, available on eClass), address the following. Use α = .01 for null hypothesis testing.
 
 #### 1.Run a general linear model (GLM) predicting income from sex, occupational prestige, religion and number of hours worked per week.
 
@@ -38,26 +39,25 @@ confint(m)
 
 #### 2.Interpret each of the unstandardized regression coefficients, both in terms of magnitude, precision and statistical significance.
 
-The intercept is SEXFemale with catholic background. 
+The intercept is SEXFemale with catholic background.
 
-**SexMale:**  
-Based on the genealized regression analysis, the coefficient for SEXMale is $5426.48, indicating that, when holding all other variables constant, being male is associated with a predicted increase by this amount, on average, in real income compared to female. Furthermore, the statistical significance of this result is underscored by a t-value of 3.707 and a highly significant p-value 0.000224. 
+**SexMale:**\
+Based on the genealized regression analysis, the coefficient for SEXMale is \$5426.48, indicating that, when holding all other variables constant, being male is associated with a predicted increase by this amount, on average, in real income compared to female. Furthermore, the statistical significance of this result is underscored by a t-value of 3.707 and a highly significant p-value 0.000224.
 
-**PRESTG80:**  
-A unit increase in PRESTG80 is associated with an expected increase of $528.48175 in annual income, while holding all other predictors constant. The corresponding Standard Error for the Estimate value was 1463.78. Therefore, the t-value is 3.448 unit and p-value of less than 2e-16. This small p-value indicates
+**PRESTG80:**\
+A unit increase in PRESTG80 is associated with an expected increase of \$528.48175 in annual income, while holding all other predictors constant. The corresponding Standard Error for the Estimate value was 1463.78. Therefore, the t-value is 3.448 unit and p-value of less than 2e-16. This small p-value indicates
 
-**RELIGJewish**  
-A one-unit increase in the variable RELIGJewish is associated with an estimated increase of $16,848.70 in real income on average, while holding all other variables constant. This predictor is statistically significant, as evidenced by a low p-value of 0.000593. Consequently, the null hypothesis positing no expected difference in income based on Jewish religious affiliation is rejected. 
+**RELIGJewish**\
+A one-unit increase in the variable RELIGJewish is associated with an estimated increase of \$16,848.70 in real income on average, while holding all other variables constant. This predictor is statistically significant, as evidenced by a low p-value of 0.000593. Consequently, the null hypothesis positing no expected difference in income based on Jewish religious affiliation is rejected.
 
-**RELIGNone**  
-Non-religious people are expected to makes $3147.08 less than Catholic people per year, while holding other variables constant. However, this factor is considered to be not statistically significant with the p-value of 0.26, and it failed to reject the null hypothesis.
+**RELIGNone**\
+Non-religious people are expected to makes \$3147.08 less than Catholic people per year, while holding other variables constant. However, this factor is considered to be not statistically significant with the p-value of 0.26, and it failed to reject the null hypothesis.
 
-**RELIGOther**  
+**RELIGOther**
 
 The coefficient estimate suggests that, on average, individuals identifying with religions categorized as "Other" are expected to earn 3,686.54 dollars more than those affiliating with Catholicism, when other variables are held constant. However, the standard error (SE) for this estimate is 4,968.91 dollars. The calculated t-value is 0.742, which corresponds to a non-significant p-value of 0.458348. Therefore, the difference in earnings between these two religious groups is not statistically significant.
 
-
-#### 3.Evaluate the statistical significance of the model 
+#### 3.Evaluate the statistical significance of the model
 
 ```{r}
 summary(m)$coefficients[, "Pr(>|t|)"]
@@ -65,6 +65,41 @@ summary(m)$coefficients[, "Pr(>|t|)"]
 
 #### 4.Calculate the predicted income for a protestant male who works 30 hours/week at a job with an occupation prestige of 55.
 
-#### 5.Interpret the magnitude of effect size measures related to predicting income (use 1m. beta) 
+```{r}
+# 1.Conventional method:
+m$coefficients["(Intercept)"] + m$coefficients["SEXMale"]*1 +
+  m$coefficients["PRESTG80"]*55 + m$coefficients["RELIGJewish"]*0 +
+  m$coefficients["RELIGNone"]*0 + m$coefficients["RELIGOther"]*0 +
+  m$coefficients["RELIGProtestant"]*1 + m$coefficients["HRS1"]*30
+
+# 2. Tidyverse using Tibble
+Predicted_income <- tibble(
+  SEX = factor("Male"),
+  PRESTG80 = 55,
+  RELIG = factor("Protestant"),
+  HRS1 = 30
+)
+
+predict(m, Predicted_income)
+```
+
+#### 5.Interpret the magnitude of effect size measures related to predicting income (use 1m. beta)
+
+```{r}
+library(rockchalk)
+?rockchalk
+getDeltaRsquare(m)
+```
 
 #### 6.Interpret the assumptions of the model. Are there any concerns? (I know... this should have been done first!)
+
+```{r}
+# Create diagnostic plots for Model "m"
+plot4 <- function(x, ...){
+  layout(matrix(1:4, 2, 2, byrow=TRUE))
+  plot(x, ...)
+  layout(matrix(1))
+  invisible(NULL)
+}
+plot4(m)
+```
