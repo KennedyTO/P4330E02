@@ -71,7 +71,7 @@ aa<-lm.beta(m)
 aa$standardized.coefficients^2
 
 # 6) Assumptions
-#Homoscedasticity
+#Homoscedasticity (Noise should be consistent)
 plot(factor(d$SEX), residuals(m)) 
 plot(factor(d$RELIG), residuals(m)) 
 plot(d$HRS1, residuals(m)) 

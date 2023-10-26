@@ -94,12 +94,21 @@ getDeltaRsquare(m)
 #### 6.Interpret the assumptions of the model. Are there any concerns? (I know... this should have been done first!)
 
 ```{r}
-# Create diagnostic plots for Model "m"
-plot4 <- function(x, ...){
-  layout(matrix(1:4, 2, 2, byrow=TRUE))
-  plot(x, ...)
-  layout(matrix(1))
-  invisible(NULL)
-}
-plot4(m)
+par(mfrow=c(2,2))
+plot(m)
+```
+
+#### How Dr. Cribbie did:
+
+```{r}
+#Homoscedasticity
+plot(factor(d$SEX), residuals(m))
+plot(factor(d$RELIG), residuals(m))
+plot(d$HRS1,residuals(m))
+plot(d$PRESTG80, residuals(m))
+plot(predict(m),residuals(m))
+
+#Normality
+hist(residuals(m))
+
 ```
